@@ -39,14 +39,14 @@ class AlbumDBViewModel(private val albumsRepository: AlbumRepository, private va
         private set
 
     init {
-        getTopRatedAlbums()
+        getNewAblums()
     }
 
-    fun getTopRatedAlbums() {
+    fun getNewAblums() {
         viewModelScope.launch {
             albumListUiState = AlbumListUiState.Loading
             albumListUiState = try {
-                AlbumListUiState.Success(albumsRepository.getTopRatedAlbums().results)
+                AlbumListUiState.Success(albumsRepository.getNewAblums().results)
             } catch (e: IOException) {
                 AlbumListUiState.Error
             } catch (e: HttpException) {

@@ -2,7 +2,7 @@ package com.example.soundwave.database
 
 import android.content.Context
 import com.example.soundwave.network.AlbumDBApiService
-import com.example.themoviedbv24.utils.Constants
+import com.example.soundwave.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

@@ -7,7 +7,7 @@ import com.example.soundwave.network.AlbumDBApiService
 
 interface AlbumRepository {
     suspend fun getPopularAlbums(): AlbumResponse<Album>
-    suspend fun getTopRatedAlbums(): AlbumResponse<Album>
+    suspend fun getNewAblums(): AlbumResponse<Album>
     suspend fun getAlbumDetails(id: String): AlbumDetails
 }
 
@@ -16,12 +16,12 @@ class AlbumsRepository(private val apiService: AlbumDBApiService) : AlbumReposit
         return apiService.getPopularAlbums();
     }
 
-    override suspend fun getTopRatedAlbums(): AlbumResponse<Album> {
-        return apiService.getTopRatedAlbums();
+    override suspend fun getNewAblums(): AlbumResponse<Album> {
+        return apiService.getNewAblums();
     }
 
     override suspend fun getAlbumDetails(id: String): AlbumDetails {
-        return apiService.getMovieDetail(id);
+        return apiService.getAlbumDetails(id);
     }
 }
 

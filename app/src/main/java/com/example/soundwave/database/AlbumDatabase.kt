@@ -17,7 +17,7 @@ abstract class AlbumDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AlbumDatabase {
             return Instance ?: synchronized(this){
-                Room.databaseBuilder(context, AlbumDatabase::class.java, "movie_database")
+                Room.databaseBuilder(context, AlbumDatabase::class.java, "album_database")
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance= it }

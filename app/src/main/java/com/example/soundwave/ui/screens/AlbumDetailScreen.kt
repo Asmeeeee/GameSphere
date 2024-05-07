@@ -21,13 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.soundwave.R
 import com.example.soundwave.viewmodel.AlbumDBViewModel
 import com.example.soundwave.viewmodel.SelectedAlbumUiState
-import com.example.themoviedbv24.utils.Constants
 
 
 @OptIn(ExperimentalMaterial3Api::class)

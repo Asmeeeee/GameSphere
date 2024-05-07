@@ -85,7 +85,7 @@ fun AlbumDBAppBar(
                 }) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "Open Menu to select different movie lists"
+                        contentDescription = "Open Menu to select different album lists"
                     )
                 }
                 DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
@@ -101,7 +101,7 @@ fun AlbumDBAppBar(
                     )
                     DropdownMenuItem(
                         onClick = {
-                            albumDBViewModel.getTopRatedAlbums()
+                            albumDBViewModel.getNewAblums()
                             menuExpanded = false
 
                         },

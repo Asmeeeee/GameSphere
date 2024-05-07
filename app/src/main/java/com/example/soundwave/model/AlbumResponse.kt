@@ -8,12 +8,9 @@ data class AlbumResponse<T> (
     @SerialName(value = "page")
     var page: Int = 0,
 
-    @SerialName(value = "results")
+    @SerialName(value = "items")
     var results: List<T> = listOf(),
 
-    @SerialName(value = "total_pages")
-    var total_pages: Int = 0,
-
-    @SerialName(value = "total_results")
+    @SerialName(value = "total")
     var total_results: Int = 0,
 )

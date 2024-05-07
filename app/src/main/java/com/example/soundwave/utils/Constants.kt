@@ -1,4 +1,4 @@
-package com.example.themoviedbv24.utils
+package com.example.soundwave.utils
 
 object Constants {
     const val ALBUM_LIST_BASE_URL = "https://api.spotify.com/v1/"
