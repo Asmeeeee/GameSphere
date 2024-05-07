@@ -50,7 +50,6 @@ fun AlbumDBAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navigateToListScreen: () -> Unit,
-    navigateToGridScreen: () -> Unit,
     albumDBViewModel: AlbumDBViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -74,7 +73,7 @@ fun AlbumDBAppBar(
         actions = {
             if (currentScreen.name == AlbumDBScreen.List.name || currentScreen.name == AlbumDBScreen.Grid.name) {
                 IconButton(onClick = {
-                    if(currentScreen.name == AlbumDBScreen.List.name) navigateToGridScreen() else navigateToListScreen()
+                    navigateToListScreen()
                 }) {
                     Icon(
                         imageVector = Icons.Filled.List ,
@@ -147,7 +146,6 @@ fun AlbumDBApp(
                 canNavigateBack = navController.previousBackStackEntry != null && currentScreen.name != AlbumDBScreen.List.name && currentScreen.name != AlbumDBScreen.Grid.name,
                 navigateUp = { navController.navigateUp() },
                 navigateToListScreen = { navController.navigate(AlbumDBScreen.List.name) },
-                navigateToGridScreen = { navController.navigate(AlbumDBScreen.Grid.name) },
                 albumDBViewModel = albumDBViewModel
             )
         }
@@ -156,7 +154,7 @@ fun AlbumDBApp(
 
         NavHost(
             navController = navController,
-            startDestination = AlbumDBScreen.Grid.name,
+            startDestination = AlbumDBScreen.List.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)

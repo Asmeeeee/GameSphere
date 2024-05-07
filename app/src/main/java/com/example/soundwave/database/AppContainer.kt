@@ -22,7 +22,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer{
         return logging
     }
 
-    val movieDBJson = Json {
+    val albumDBJson = Json {
         ignoreUnknownKeys = true
     }
 
@@ -34,7 +34,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer{
                 .readTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
                 .build()
         )
-        .addConverterFactory(movieDBJson.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(albumDBJson.asConverterFactory("application/json".toMediaType()))
         .baseUrl(Constants.ALBUM_LIST_BASE_URL)
         .build()
 
