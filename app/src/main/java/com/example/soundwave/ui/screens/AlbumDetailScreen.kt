@@ -1,5 +1,6 @@
 package com.example.soundwave.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -24,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.soundwave.R
+import com.example.soundwave.spotify.SpotifyAuthServiceProvider
+import com.example.soundwave.spotify.SpotifyViewModel
 import com.example.soundwave.viewmodel.AlbumDBViewModel
 import com.example.soundwave.viewmodel.SelectedAlbumUiState
 
@@ -35,6 +38,13 @@ fun AlbumDetailScreen(
     selectedAlbumUiState: SelectedAlbumUiState,
     modifier: Modifier = Modifier
 ) {
+
+    Log.d("AlbumDetailScreen", "Tadimiz kacmasin ali riza bey")
+
+    //SpotifyViewModel.getUserTopTracks()
+
+   // val accessToken = SpotifyAuthServiceProvider.accessToken
+   // Log.d("Access Token", "Access Token: $accessToken")
     val selectedAlbumUiState = albumDBViewModel.selectedAlbumUiState
     when (selectedAlbumUiState) {
         is SelectedAlbumUiState.Success -> {
@@ -51,10 +61,15 @@ fun AlbumDetailScreen(
                         contentScale = ContentScale.Crop
                     )
                 }
-                Text(
-                    text = selectedAlbumUiState.albumDetail.title,
-                    style = MaterialTheme.typography.headlineSmall
-                )
+                /*
+                viewModel.selectedAlbumInfo.value?.let {
+                    Text(
+                        text = it.name,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
+
+                 */
                 Spacer(modifier = Modifier.size(8.dp))
                 Row{
                     selectedAlbumUiState.albumDetail.genres.forEach { genre ->

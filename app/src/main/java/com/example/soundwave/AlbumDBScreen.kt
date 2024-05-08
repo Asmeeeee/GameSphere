@@ -1,6 +1,7 @@
 package com.example.soundwave
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.soundwave.spotify.SpotifyAuthServiceProvider
+import com.example.soundwave.spotify.SpotifyViewModel
 import com.example.soundwave.ui.screens.AlbumDetailScreen
 import com.example.soundwave.ui.screens.AlbumListScreen
 import com.example.soundwave.viewmodel.AlbumDBViewModel
@@ -53,6 +56,11 @@ fun AlbumDBAppBar(
     albumDBViewModel: AlbumDBViewModel,
     modifier: Modifier = Modifier
 ) {
+
+
+
+// Access the access token
+
     var menuExpanded by remember { mutableStateOf(false) }
     TopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
@@ -129,6 +137,7 @@ fun AlbumDBAppBar(
 @Composable
 fun AlbumDBApp(
     navController: NavHostController = rememberNavController()
+
 ) {
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -138,6 +147,8 @@ fun AlbumDBApp(
     )
 
     val albumDBViewModel: AlbumDBViewModel = viewModel(factory = AlbumDBViewModel.Factory)
+
+
 
     Scaffold(
         topBar = {
@@ -151,6 +162,8 @@ fun AlbumDBApp(
         }
     ) { innerPadding ->
         val albumDBViewModel: AlbumDBViewModel = viewModel(factory = AlbumDBViewModel.Factory)
+        val accessToken = SpotifyAuthServiceProvider.accessToken
+        Log.d("accessToken", accessToken)
 
         NavHost(
             navController = navController,
@@ -166,6 +179,7 @@ fun AlbumDBApp(
                         albumDBViewModel.setSelectedAlbumDetail(it.id)
                         navController.navigate(AlbumDBScreen.Detail.name)
                     },
+                    spotifyViewModel = SpotifyViewModel(accessToken),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
@@ -175,6 +189,7 @@ fun AlbumDBApp(
                 AlbumDetailScreen(
                     albumDBViewModel = albumDBViewModel,
                     selectedAlbumUiState = albumDBViewModel.selectedAlbumUiState,
+
                     modifier = Modifier
                 )
             }

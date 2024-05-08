@@ -66,11 +66,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+
+
+
 
 
 //    //Room
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    implementation("androidx.core:core-ktx:1.6.0") // Corrected version and artifact name
+    implementation("androidx.core:core-ktx:1.6.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidthings) // Corrected version and artifact name
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}") //
 

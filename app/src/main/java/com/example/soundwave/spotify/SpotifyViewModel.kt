@@ -2,7 +2,10 @@ package com.example.soundwave.spotify
 
 import SpotifyArtistInfoService
 import SpotifyArtistInfoServiceProvider
+import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,7 +25,7 @@ open class SpotifyViewModel(protected val token: String) : ViewModel() {
         SpotifyAlbumTracksServiceProvider.instance, SpotifyTokenDataServiceProvider.instance)
 
 
-    val username = MutableLiveData<String>()
+
     val tokenCode = MutableLiveData<String>()
     val tokenData = MutableLiveData<JsonObject>()
     val selectedTerm = MutableLiveData<String>("short_term")
@@ -50,6 +53,11 @@ open class SpotifyViewModel(protected val token: String) : ViewModel() {
 
 
 
+
+
+
+
+
     // Public immutable data which the UI can observe
 
 
@@ -64,34 +72,29 @@ open class SpotifyViewModel(protected val token: String) : ViewModel() {
     }
 
     fun saveSelectedTerm(term: String) {
-        val result = term
+        val result = "short term"
         result?.let {
             selectedTerm.postValue(it)
         }
     }
 
-    fun saveUsername(userName: String){
-        val result = userName
-        result?.let{
-            username.postValue(it)
-        }
-    }
+
 
     fun saveSelectedArtist(artistID: String) {
-        val result = artistID
+        val result = "0TnOYISbd1XYRBk9myaseg"
         result?.let {
             _selectedArtistID.postValue(it)
         }
     }
     fun saveSelectedTrack(trackID: String) {
-        val result = trackID
+        val result = "11dFghVXANMlKmJXsNCbNl"
         result?.let {
             _selectedTrackID.postValue(it)
         }
     }
 
     fun saveSelectedAlbum(albumID: String) {
-        val result = albumID
+        val result = "4aawyAB9vmqN3uQ7FjRGTy"
         result?.let {
             _selectedAlbumID.postValue(it)
         }
@@ -154,14 +157,24 @@ open class SpotifyViewModel(protected val token: String) : ViewModel() {
         }
     }
 
+
+
     open fun getUserTopTracks() {
         viewModelScope.launch {
+            Log.d("getUserTopTracks", "Fetching top tracks...")
+            Log.d("getUserTopTracks", token)
             val result = repository.getUserTopTracks(token, selectedTerm.value.toString(), 0)
             result?.let {
                 topTracks.postValue(it)
-            } // Add error handling if result is null
+                Log.d("getUserTopTracks", "Top tracks fetched successfully")
+                Log.d("getUserTopTracks", "$it")
+
+            } ?: run {
+                Log.d("getUserTopTracks", "Failed to fetch top tracks")
+            }
         }
     }
+
     open fun getUserTopArtists() {
         viewModelScope.launch {
             val result = repository.getUserTopArtist(token, selectedTerm.value.toString(), 0)
@@ -190,12 +203,18 @@ open class SpotifyViewModel(protected val token: String) : ViewModel() {
 
     open fun getSelectedArtistAlbums() {
         viewModelScope.launch {
-            val result = repository.getSelectedArtistAlbums(token, _selectedArtistID.value.toString())
-            result?.let {
-                selectedArtistAlbums.postValue(it)
+            try {
+                val result = repository.getSelectedArtistAlbums(token, _selectedArtistID.value.toString())
+                result?.let {
+                    selectedArtistAlbums.postValue(it)
+                    Log.d(TAG, "Selected artist albums: $it")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception: ${e.message}")
             }
         }
     }
+
     open fun getSelectedTrack() {
         viewModelScope.launch {
             val result = repository.getSelectedTrackInfo(token, _selectedTrackID.value.toString())
@@ -206,21 +225,33 @@ open class SpotifyViewModel(protected val token: String) : ViewModel() {
     }
 
     open fun getSelectedAlbum() {
-        viewModelScope.launch{
-            val result = repository.getSelectedAlbumInfo(token, _selectedAlbumID.value.toString())
-            result?.let {
-                selectedAlbumInfo.postValue(it)
+        viewModelScope.launch {
+            try {
+                val result = repository.getSelectedAlbumInfo(token, "0TnOYISbd1XYRBk9myaseg")
+                result?.let {
+                    selectedAlbumInfo.postValue(it)
+                    Log.d("getSelectedAlbum", "Selected album info: $it")
+                }
+            } catch (e: Exception) {
+                Log.e("getSelectedAlbum", "Exception: ${e.message}")
             }
         }
     }
+
     open fun getAlbumTracks() {
         viewModelScope.launch {
-            val result = repository.getAlbumTracks(token, _selectedAlbumID.value.toString())
-            result?.let {
-                albumTracks.postValue(it)
+            try {
+                val result = repository.getAlbumTracks(token, _selectedAlbumID.value.toString())
+                result?.let {
+                    albumTracks.postValue(it)
+                    Log.d("getAlbumTracks", "Album tracks: $it")
+                }
+            } catch (e: Exception) {
+                Log.e("getAlbumTracks", "Exception: ${e.message}")
             }
         }
     }
+
 
     open fun removeRatedTrack(trackId: String) {
         val currentTracks = recommendationResults.value?.tracks?.toMutableList()
@@ -278,15 +309,19 @@ open class SpotifyRepository(private val spotifyTopTracksService: SpotifyTopTrac
                              private val spotifyArtistTopTrackService: SpotifyArtistTopTrackService, private val spotifyArtistAlbumsService: SpotifyArtistAlbumsService,
                              private val spotifyAlbumTracksService: SpotifyAlbumTracksService, private val spotifyTokenDataService: SpotifyTokenDataService,
                              ) {
-    open suspend fun getUserTopTracks(token: String?, term: String , offset: Int): TopTracksResponse? {
+    open suspend fun getUserTopTracks(token: String?, term: String, offset: Int): TopTracksResponse? {
         return try {
-            val response = spotifyTopTracksService.getUserTopTracks("Bearer $token" , range = term, limit = 50 , offset = offset)
+            val response = spotifyTopTracksService.getUserTopTracks("Bearer $token", range = term, limit = 50, offset = offset)
             if (response.isSuccessful) {
-                response.body()
+                val responseBody = response.body()
+                Log.d("getUserTopTracks", "Response: $responseBody")
+                responseBody
             } else {
+                Log.d("getUserTopTracks", "Unsuccessful response: ${response.code()}")
                 null // or handle error response
             }
         } catch (e: Exception) {
+            Log.e("getUserTopTracks", "Exception: ${e.message}")
             null // or handle exception
         }
     }
@@ -322,7 +357,7 @@ open class SpotifyRepository(private val spotifyTopTracksService: SpotifyTopTrac
     open suspend fun getSelectedArtistTopTracks(token: String?, selectedArtistId: String) : SpotifyArtistTopTrackResponse? {
         return try {
             Log.d("RegistrationActivity", "Hello There buradayım")
-            val response = spotifyArtistTopTrackService.getArtistTopTracks("Bearer $token", selectedArtistId)
+            val response = spotifyArtistTopTrackService.getArtistTopTracks("Bearer $token","0TnOYISbd1XYRBk9myaseg")
             Log.d("RegistrationActivity", response.code().toString())
             if(response.isSuccessful) {
                 Log.d("RegistrationActivity", "Hello There satoptracks")
@@ -345,32 +380,40 @@ open class SpotifyRepository(private val spotifyTopTracksService: SpotifyTopTrac
     }
     open suspend fun getSelectedArtistAlbums(token: String?,selectedArtistId: String): SpotifyArtistAlbumsResponse? {
         return try {
-            val response = spotifyArtistAlbumsService.getArtistAlbums("Bearer $token",selectedArtistId )
+            val response = spotifyArtistAlbumsService.getArtistAlbums("Bearer $token","0TnOYISbd1XYRBk9myaseg" )
             if(response.isSuccessful){
-                response.body()
+                val responseBody = response.body()
+                Log.d(TAG, "Album tracks response: ${responseBody?.toString() ?: "Empty response"}")
+                responseBody
             }
             else {
+                Log.d(TAG, "Unsuccessful response: ${response.code()}")
                 null
             }
         }
         catch (e: Exception) {
+            Log.e(TAG, "Exception: ${e.message}")
             null
+
         }
     }
-    open suspend fun getAlbumTracks(token: String?, selectedAlbumId: String): SpotifyAlbumTracksResponse?{
-        return try{
-            val response = spotifyAlbumTracksService.getAlbumTracks("Bearer $token", selectedAlbumId)
-            if(response.isSuccessful) {
-                response.body()
-            }
-            else {
+    open suspend fun getAlbumTracks(token: String?, selectedAlbumId: String): SpotifyAlbumTracksResponse? {
+        return try {
+            val response = spotifyAlbumTracksService.getAlbumTracks("Bearer $token","4aawyAB9vmqN3uQ7FjRGTy")
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                Log.d(" getAlbumTracks", "Album tracks response: $responseBody")
+                responseBody
+            } else {
+                Log.d(" getAlbumTracks", "Unsuccessful response: ${response.code()}")
                 null
             }
-
-        } catch(e:Exception){
+        } catch (e: Exception) {
+            Log.e(" getAlbumTracks", "Exception: ${e.message}")
             null
         }
     }
+
     open suspend fun getSelectedTrackInfo(token: String?, selectedTrackId: String) : Track?{
         return try {
             //Log.d()
@@ -390,7 +433,7 @@ open class SpotifyRepository(private val spotifyTopTracksService: SpotifyTopTrac
 
     open suspend fun getSelectedAlbumInfo(token: String?, selectedAlbumId: String) : Album? {
         return try {
-            val response = spotifyAlbumInfoService.getAlbumInfo("Bearer $token", selectedAlbumId)
+            val response = spotifyAlbumInfoService.getAlbumInfo("Bearer $token", "4aawyAB9vmqN3uQ7FjRGTy")
             if(response.isSuccessful) {
                 response.body()
             }
@@ -469,8 +512,8 @@ open class SpotifyRepository(private val spotifyTopTracksService: SpotifyTopTrac
         val client = OkHttpClient()
         val REQUEST_CODE = 1337
         val REDIRECT_URI = "com.example.start2://callback"
-        val CLIENT_ID = "214ab19a5a85486489db0ae512195fca"
-        val CLIENT_SECRET = "118873683fc44590b3579c452bdcb3f1"
+        val CLIENT_ID = "67cce911671f41adaa404b600f14aa90"
+        val CLIENT_SECRET = "1cbc10e1bed94c1192d7b9c94fb376a5"
 
 
 // Construct the JsonObject using Gson
