@@ -2,6 +2,7 @@
     <string name="app_name">SoundWave</string>
     <string name="popular_albums">Popular Albums</string>
     <string name="album_detail">Album Details</string>
+    <string name="album_tracks">Album Tracks</string>
     <string name="back_button">Back</string>
     <string name="more_vert">More</string>
     <string name="saved_albums">Saved Albums</string>

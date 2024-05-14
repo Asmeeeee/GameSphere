@@ -1,5 +1,6 @@
 package com.example.soundwave.ui.screens
 
+
 import android.util.Log
 
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,14 +21,15 @@ import com.example.soundwave.model.Album
 import com.example.soundwave.spotify.SpotifyViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import com.example.soundwave.spotify.SimpleTrack
 import com.example.soundwave.spotify.Track
 
 
 import com.example.soundwave.viewmodel.AlbumListUiState
 
-/*
+
 @Composable
-fun AlbumListScreen(albumListUiState: AlbumListUiState,
+fun TrackListScreen(albumListUiState: AlbumListUiState,
                     onAlbumListItemClicked: (Album) -> Unit,
                     spotifyViewModel: SpotifyViewModel,
                     modifier: Modifier = Modifier
@@ -43,7 +44,7 @@ fun AlbumListScreen(albumListUiState: AlbumListUiState,
 
 
     spotifyViewModel.getAlbumTracks()
-  //  spotifyViewModel.getSelectedArtist()
+    //  spotifyViewModel.getSelectedArtist()
     val albumTracks by spotifyViewModel.albumTracks.observeAsState()
 
 
@@ -53,18 +54,20 @@ fun AlbumListScreen(albumListUiState: AlbumListUiState,
 
     spotifyViewModel.getSelectedArtistAlbums()
 
+    val selectedArtistAlbums by spotifyViewModel.albumTracks.observeAsState()
+
     Log.d("Track12435123613", albumTracks.toString())
 
 
 
-        // Check if albumTracks is not null
+    // Check if albumTracks is not null
     LazyColumn(modifier = modifier) {
         // Check if albumTracks is not null
-        albumTracks?.let { tracksResponse ->
+        selectedArtistAlbums?.let { tracksResponse ->
             // Ensure that the response contains a list of items
             tracksResponse.items?.let { tracks ->
                 itemsIndexed(tracks) { index, track ->
-                    AlbumListItemCard(
+                    TracListItemCard(
                         SimpleTrack = track,
                         modifier = Modifier.padding(8.dp)
                     )
@@ -87,14 +90,14 @@ fun AlbumListScreen(albumListUiState: AlbumListUiState,
 
 
 @Composable
-fun AlbumListItemCard(
+fun TracListItemCard(
     SimpleTrack: SimpleTrack,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier,
 
-    ) {
+        ) {
         Row {
 //            Box {
 //                AsyncImage(
@@ -122,9 +125,7 @@ fun AlbumListItemCard(
     }
 }
 
- */
-
-
+/*
 @Composable
 fun AlbumListScreen(albumListUiState: AlbumListUiState,
                     onAlbumListItemClicked: (Album) -> Unit,
@@ -140,9 +141,9 @@ fun AlbumListScreen(albumListUiState: AlbumListUiState,
 
 
 
-   // spotifyViewModel.getAlbumTracks()
+    // spotifyViewModel.getAlbumTracks()
     //  spotifyViewModel.getSelectedArtist()
-   // val albumTracks by spotifyViewModel.albumTracks.observeAsState()
+    // val albumTracks by spotifyViewModel.albumTracks.observeAsState()
 
     spotifyViewModel.getSelectedTrack()
 
@@ -151,7 +152,7 @@ fun AlbumListScreen(albumListUiState: AlbumListUiState,
 
 
 
-   // spotifyViewModel.getSelectedArtistAlbums()
+    // spotifyViewModel.getSelectedArtistAlbums()
 
     val selectedTrackInfo by spotifyViewModel.selectedTrackInfo.observeAsState()
 
@@ -219,3 +220,5 @@ fun AlbumListItemCard(
         }
     }
 }
+
+ */

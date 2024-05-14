@@ -417,7 +417,7 @@ open class SpotifyRepository(private val spotifyTopTracksService: SpotifyTopTrac
     open suspend fun getSelectedTrackInfo(token: String?, selectedTrackId: String) : Track?{
         return try {
             //Log.d()
-            val response = spotifyTrackInfoService.getTrackInfo("Bearer $token", selectedTrackId)
+            val response = spotifyTrackInfoService.getTrackInfo("Bearer $token", "11dFghVXANMlKmJXsNCbNl")
             if(response.isSuccessful) {
                 response.body()
             }

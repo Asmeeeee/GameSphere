@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,14 +40,15 @@ import com.example.soundwave.spotify.SpotifyAuthServiceProvider
 import com.example.soundwave.spotify.SpotifyViewModel
 import com.example.soundwave.ui.screens.AlbumDetailScreen
 import com.example.soundwave.ui.screens.AlbumListScreen
+import com.example.soundwave.ui.screens.TrackListScreen
 import com.example.soundwave.viewmodel.AlbumDBViewModel
 
 enum class AlbumDBScreen(@StringRes val title: Int) {
     List(title = R.string.popular_albums),
     Grid(title = R.string.popular_albums),
     Detail(title = R.string.album_detail),
+    Track(title = R.string.album_tracks)
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDBAppBar(
@@ -53,13 +56,11 @@ fun AlbumDBAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navigateToListScreen: () -> Unit,
+    navigateToTrackScreen: () -> Unit, // Function to navigate to the Album Track screen
     albumDBViewModel: AlbumDBViewModel,
+    navController: NavController, // NavController for navigation
     modifier: Modifier = Modifier
 ) {
-
-
-
-// Access the access token
 
     var menuExpanded by remember { mutableStateOf(false) }
     TopAppBar(
@@ -84,7 +85,7 @@ fun AlbumDBAppBar(
                     navigateToListScreen()
                 }) {
                     Icon(
-                        imageVector = Icons.Filled.List ,
+                        imageVector = Icons.Filled.List,
                         contentDescription = stringResource(id = R.string.more_vert)
                     )
                 }
@@ -128,10 +129,21 @@ fun AlbumDBAppBar(
                         }
                     )
                 }
+                // Add button to navigate to Album Track screen
+                IconButton(onClick = {
+                    navigateToTrackScreen()
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                     "View Album Tracks"
+                    )
+
+                }
             }
         }
     )
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -157,8 +169,11 @@ fun AlbumDBApp(
                 canNavigateBack = navController.previousBackStackEntry != null && currentScreen.name != AlbumDBScreen.List.name && currentScreen.name != AlbumDBScreen.Grid.name,
                 navigateUp = { navController.navigateUp() },
                 navigateToListScreen = { navController.navigate(AlbumDBScreen.List.name) },
-                albumDBViewModel = albumDBViewModel
+                navigateToTrackScreen = { navController.navigate(AlbumDBScreen.Track.name) },
+                albumDBViewModel = albumDBViewModel,
+                navController = navController
             )
+
         }
     ) { innerPadding ->
         val albumDBViewModel: AlbumDBViewModel = viewModel(factory = AlbumDBViewModel.Factory)
@@ -172,6 +187,7 @@ fun AlbumDBApp(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+
             composable(route = AlbumDBScreen.List.name) {
                 AlbumListScreen(
                     albumListUiState = albumDBViewModel.albumListUiState,
@@ -185,6 +201,8 @@ fun AlbumDBApp(
                         .padding(16.dp)
                 )
             }
+
+
             composable(route = AlbumDBScreen.Detail.name) {
                 AlbumDetailScreen(
                     albumDBViewModel = albumDBViewModel,
@@ -193,6 +211,28 @@ fun AlbumDBApp(
                     modifier = Modifier
                 )
             }
+
+
+            composable(route = AlbumDBScreen.Track.name) {
+                TrackListScreen(
+                    albumListUiState = albumDBViewModel.albumListUiState,
+                    onAlbumListItemClicked = {
+                        albumDBViewModel.setSelectedAlbumDetail(it.id)
+                        navController.navigate(AlbumDBScreen.Detail.name)
+                    },
+                    spotifyViewModel = SpotifyViewModel(accessToken),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+
+
+
+
+
         }
     }
 }
+
+
