@@ -33,24 +33,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.soundwave.ui.screens.AlbumDetailScreen
-import com.example.soundwave.ui.screens.AlbumListScreen
-import com.example.soundwave.viewmodel.AlbumDBViewModel
+import com.example.soundwave.ui.screens.GameDetailScreen
+import com.example.soundwave.ui.screens.GameListScreen
+import com.example.soundwave.viewmodel.GameDBViewModel
 
-enum class AlbumDBScreen(@StringRes val title: Int) {
-    List(title = R.string.popular_albums),
-    Grid(title = R.string.popular_albums),
-    Detail(title = R.string.album_detail),
+enum class GameDBScreen(@StringRes val title: Int) {
+    List(title = R.string.games),
+    Grid(title = R.string.games),
+    Detail(title = R.string.game_detail),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumDBAppBar(
-    currentScreen: AlbumDBScreen,
+fun GameDBAppBar(
+    currentScreen: GameDBScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navigateToListScreen: () -> Unit,
-    albumDBViewModel: AlbumDBViewModel,
+    gameDBViewModel: GameDBViewModel,
     modifier: Modifier = Modifier
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
@@ -71,7 +71,7 @@ fun AlbumDBAppBar(
             }
         },
         actions = {
-            if (currentScreen.name == AlbumDBScreen.List.name || currentScreen.name == AlbumDBScreen.Grid.name) {
+            if (currentScreen.name == GameDBScreen.List.name || currentScreen.name == GameDBScreen.Grid.name) {
                 IconButton(onClick = {
                     navigateToListScreen()
                 }) {
@@ -85,38 +85,28 @@ fun AlbumDBAppBar(
                 }) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "Open Menu to select different album lists"
+                        contentDescription = "Open Menu to select different game lists"
                     )
                 }
                 DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
                     DropdownMenuItem(
                         onClick = {
-                            albumDBViewModel.getPopularAlbums()
+                            gameDBViewModel.getGames()
                             menuExpanded = false
 
                         },
                         text = {
-                            Text(stringResource(R.string.popular_albums))
+                            Text(stringResource(R.string.games))
                         }
                     )
                     DropdownMenuItem(
                         onClick = {
-                            albumDBViewModel.getNewAblums()
+                            gameDBViewModel.getSavedGames()
                             menuExpanded = false
 
                         },
                         text = {
-                            Text(stringResource(R.string.top_rated_albums))
-                        }
-                    )
-                    DropdownMenuItem(
-                        onClick = {
-                            albumDBViewModel.getSavedAlbums()
-                            menuExpanded = false
-
-                        },
-                        text = {
-                            Text(stringResource(R.string.saved_albums))
+                            Text(stringResource(R.string.saved_games))
                         }
                     )
                 }
@@ -127,54 +117,54 @@ fun AlbumDBAppBar(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AlbumDBApp(
+fun GameDBApp(
     navController: NavHostController = rememberNavController()
 ) {
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
-    val currentScreen = AlbumDBScreen.valueOf(
-        backStackEntry?.destination?.route ?: AlbumDBScreen.List.name
+    val currentScreen = GameDBScreen.valueOf(
+        backStackEntry?.destination?.route ?: GameDBScreen.List.name
     )
 
-    val albumDBViewModel: AlbumDBViewModel = viewModel(factory = AlbumDBViewModel.Factory)
+    val gameDBViewModel: GameDBViewModel = viewModel(factory = GameDBViewModel.Factory)
 
     Scaffold(
         topBar = {
-            AlbumDBAppBar(
+            GameDBAppBar(
                 currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null && currentScreen.name != AlbumDBScreen.List.name && currentScreen.name != AlbumDBScreen.Grid.name,
+                canNavigateBack = navController.previousBackStackEntry != null && currentScreen.name != GameDBScreen.List.name && currentScreen.name != GameDBScreen.Grid.name,
                 navigateUp = { navController.navigateUp() },
-                navigateToListScreen = { navController.navigate(AlbumDBScreen.List.name) },
-                albumDBViewModel = albumDBViewModel
+                navigateToListScreen = { navController.navigate(GameDBScreen.List.name) },
+                gameDBViewModel = gameDBViewModel
             )
         }
     ) { innerPadding ->
-        val albumDBViewModel: AlbumDBViewModel = viewModel(factory = AlbumDBViewModel.Factory)
+        val gameDBViewModel: GameDBViewModel = viewModel(factory = GameDBViewModel.Factory)
 
         NavHost(
             navController = navController,
-            startDestination = AlbumDBScreen.List.name,
+            startDestination = GameDBScreen.List.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable(route = AlbumDBScreen.List.name) {
-                AlbumListScreen(
-                    albumListUiState = albumDBViewModel.albumListUiState,
-                    onAlbumListItemClicked = {
-                        albumDBViewModel.setSelectedAlbumDetail(it.id)
-                        navController.navigate(AlbumDBScreen.Detail.name)
+            composable(route = GameDBScreen.List.name) {
+                GameListScreen(
+                    gameListUiState = gameDBViewModel.gameListUiState,
+                    onGameListItemClicked = {
+                        gameDBViewModel.setSelectedGameDetail(it.id)
+                        navController.navigate(GameDBScreen.Detail.name)
                     },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
             }
-            composable(route = AlbumDBScreen.Detail.name) {
-                AlbumDetailScreen(
-                    albumDBViewModel = albumDBViewModel,
-                    selectedAlbumUiState = albumDBViewModel.selectedAlbumUiState,
+            composable(route = GameDBScreen.Detail.name) {
+                GameDetailScreen(
+                    gameDBViewModel = gameDBViewModel,
+                    selectedGameUiState = gameDBViewModel.selectedGameUiState,
                     modifier = Modifier
                 )
             }

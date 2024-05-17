@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">SoundWave</string>
-    <string name="popular_albums">Popular Albums</string>
-    <string name="album_detail">Album Details</string>
+    <string name="games">Games</string>
+    <string name="game_detail">Game Details</string>
+    <string name="developers">Developers</string>
+    <string name="developer_detail">Developer Details</string>
     <string name="back_button">Back</string>
     <string name="more_vert">More</string>
-    <string name="saved_albums">Saved Albums</string>
-    <string name="top_rated_albums">Top Rated Albums</string>
+    <string name="saved_games">Saved Games</string>
     <string name="info">Info</string>
-    <string name="open_uri">Open uri albumDetail</string>
+    <string name="open_uri">Open uri gameDetail</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.example.soundwave.database
 
 import android.content.Context
-import com.example.soundwave.network.AlbumDBApiService
+import com.example.soundwave.network.GameDBApiService
 import com.example.soundwave.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -10,8 +10,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 interface AppContainer {
-    val albumRepository: AlbumRepository
-    val savedAlbumRepository: SavedAlbumRepository
+    val gameRepository: GameRepository
+    val savedGameRepository: SavedGameRepository
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer{
@@ -22,7 +22,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer{
         return logging
     }
 
-    val albumDBJson = Json {
+    val gameDBJson = Json {
         ignoreUnknownKeys = true
     }
 
@@ -34,18 +34,18 @@ class DefaultAppContainer(private val context: Context) : AppContainer{
                 .readTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
                 .build()
         )
-        .addConverterFactory(albumDBJson.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(Constants.ALBUM_LIST_BASE_URL)
+        .addConverterFactory(gameDBJson.asConverterFactory("application/json".toMediaType()))
+        .baseUrl(Constants.GAME_LIST_BASE_URL)
         .build()
 
-    private val retrofitService: AlbumDBApiService by lazy {
-        retrofit.create(AlbumDBApiService::class.java)
+    private val retrofitService: GameDBApiService by lazy {
+        retrofit.create(GameDBApiService::class.java)
     }
-    override val albumRepository: AlbumRepository by lazy {
-        AlbumsRepository(retrofitService)
+    override val gameRepository: GameRepository by lazy {
+        GamesRepository(retrofitService)
     }
 
-    override val savedAlbumRepository: SavedAlbumRepository by lazy{
-        FavoriteAlbumRepository(AlbumDatabase.getDatabase(context).albumDao())
+    override val savedGameRepository: SavedGameRepository by lazy{
+        FavoriteGameRepository(GameDatabase.getDatabase(context).gameDao())
     }
 }
