@@ -14,25 +14,25 @@ interface GameDBApiService {
 
     @GET("games")
     suspend fun getGames(
-        @Query("api_key")
+        @Query("key")
         apiKey: String = Constants.API_KEY
     ): GameResponse<Game>
     @GET("games/{id}")
     suspend fun getGameDetails(
         @Path("id") gameId: String,
-        @Query("api_key")
+        @Query("key")
         apiKey: String = Constants.API_KEY
     ): GameDetails
 
     @GET("developers")
     suspend fun getDeveloper(
-        @Query("api_key")
+        @Query("key")
         apiKey: String = Constants.API_KEY
     ): GameResponse<Developer>
 
     @GET("developers/{id}")
     suspend fun getDeveloperDetails(
         @Path("id") developerId: String,
-        @Query("api_key") apiKey: String = Constants.API_KEY
+        @Query("key") apiKey: String = Constants.API_KEY
     ): DeveloperDetails
 }

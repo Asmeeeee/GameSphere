@@ -1,5 +1,5 @@
 package com.example.soundwave.database
-
+import android.util.Log
 import com.example.soundwave.model.Developer
 import com.example.soundwave.model.DeveloperDetails
 import com.example.soundwave.model.Game
@@ -16,19 +16,27 @@ interface GameRepository {
 
 class GamesRepository(private val apiService: GameDBApiService) : GameRepository{
     override suspend fun getGames(): GameResponse<Game> {
-        return apiService.getGames();
+        val response = apiService.getGames()
+        Log.d("GameRepository", "getGames response: $response")
+        return response
     }
 
     override suspend fun getDevelopers(): GameResponse<Developer> {
-        return apiService.getDeveloper();
+        val response = apiService.getDeveloper()
+        Log.d("GameRepository", "getDevelopers response: $response")
+        return response
     }
 
     override suspend fun getGameDetails(id: String): GameDetails {
-        return apiService.getGameDetails(id);
+        val response = apiService.getGameDetails(id)
+        Log.d("GameRepository", "getGameDetails response: $response")
+        return response
     }
 
     override suspend fun getDeveloperDetails(id: String): DeveloperDetails {
-        return apiService.getDeveloperDetails(id);
+        val response = apiService.getDeveloperDetails(id)
+        Log.d("GameRepository", "getDeveloperDetails response: $response")
+        return response
     }
 }
 
