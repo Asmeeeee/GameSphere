@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -24,20 +23,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.soundwave.R
-import com.example.soundwave.viewmodel.AlbumDBViewModel
-import com.example.soundwave.viewmodel.SelectedAlbumUiState
+import com.example.soundwave.viewmodel.GameDBViewModel
+import com.example.soundwave.viewmodel.SelectedGameUiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumDetailScreen(
-    albumDBViewModel: AlbumDBViewModel,
-    selectedAlbumUiState: SelectedAlbumUiState,
+fun GameDetailScreen(
+    gameDBViewModel: GameDBViewModel,
+    selectedGameUiState: SelectedGameUiState,
     modifier: Modifier = Modifier
 ) {
-    val selectedAlbumUiState = albumDBViewModel.selectedAlbumUiState
-    when (selectedAlbumUiState) {
-        is SelectedAlbumUiState.Success -> {
+    val selectedGameUiState = gameDBViewModel.selectedGameUiState
+    when (selectedGameUiState) {
+        is SelectedGameUiState.Success -> {
             val uriHandler = LocalUriHandler.current
             Column(Modifier.width(IntrinsicSize.Max)) {
                 Box(
@@ -45,31 +44,24 @@ fun AlbumDetailScreen(
                         .fillMaxWidth()
                         .padding(0.dp)) {
                     AsyncImage(
-                        model = selectedAlbumUiState.albumDetail.images.get(0).url,
-                        contentDescription = selectedAlbumUiState.albumDetail.title,
+                        model = selectedGameUiState.gameDetails.background_image,
+                        contentDescription = selectedGameUiState.gameDetails.name,
                         modifier = modifier,
                         contentScale = ContentScale.Crop
                     )
                 }
                 Text(
-                    text = selectedAlbumUiState.albumDetail.title,
+                    text = selectedGameUiState.gameDetails.name,
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                Row{
-                    selectedAlbumUiState.albumDetail.genres.forEach { genre ->
-                        Badge{ Text(text = genre,) }
-                        Spacer(modifier = Modifier.size(8.dp))
-                    }
-                }
-                Spacer(modifier = Modifier.size(8.dp))
                 Text(
-                    text = selectedAlbumUiState.albumDetail.releaseDate,
+                    text = selectedGameUiState.gameDetails.released,
                     style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Button(
-                    onClick = { uriHandler.openUri(selectedAlbumUiState.albumDetail.uri) },
+                    onClick = { uriHandler.openUri(selectedGameUiState.gameDetails.website) },
                     modifier = modifier.fillMaxWidth()) {
                     Text(text = stringResource(id = R.string.open_uri))
                 }
@@ -77,25 +69,25 @@ fun AlbumDetailScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "Favorite", style = MaterialTheme.typography.bodyLarge)
                     Spacer(modifier = Modifier.size(8.dp))
-                    Switch(checked = selectedAlbumUiState.is_Favorite, onCheckedChange = {
+                    Switch(checked = selectedGameUiState.is_Favorite, onCheckedChange = {
                         if(it){
-                            albumDBViewModel.saveAlbum(selectedAlbumUiState.albumDetail)
+                            gameDBViewModel.saveGame(selectedGameUiState.gameDetails)
                         }else{
-                            albumDBViewModel.deleteAlbum(selectedAlbumUiState.albumDetail)
+                            gameDBViewModel.deleteGame(selectedGameUiState.gameDetails)
                         }
                     })
                 }
                 Spacer(modifier = Modifier.size(8.dp))
             }
         }
-        is SelectedAlbumUiState.Loading -> {
+        is SelectedGameUiState.Loading -> {
             Text(
                 text = "Loading...",
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(16.dp)
             )
         }
-        is SelectedAlbumUiState.Error -> {
+        is SelectedGameUiState.Error -> {
             Text(
                 text = "Error...",
                 style = MaterialTheme.typography.bodySmall,
