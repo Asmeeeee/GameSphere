@@ -155,8 +155,8 @@ fun GameDBApp(
             composable(route = GameDBScreen.List.name) {
                 GameListScreen(
                     gameListUiState = gameDBViewModel.gameListUiState,
-                    onGameListItemClicked = {
-                        gameDBViewModel.setSelectedGameDetail(it.id)
+                    onGameListItemClicked = { game ->
+                        gameDBViewModel.setSelectedGameDetail(game.id)
                         navController.navigate(GameDBScreen.Detail.name)
                     },
                     modifier = Modifier
