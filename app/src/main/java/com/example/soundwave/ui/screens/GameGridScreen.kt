@@ -27,39 +27,43 @@ import com.example.soundwave.viewmodel.GameListUiState
 @Composable
 fun GameGridScreen(gameListUiState: GameListUiState,
                    onGameListItemClicked: (Game) -> Unit,
+                   onSearchButtonClicked: () -> Unit,
                    modifier: Modifier = Modifier
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp)
-    ) {
-        when(gameListUiState) {
-            is GameListUiState.Success -> {
-                items(gameListUiState.games) { game ->
-                    GameGridItemCard(
-                        game = game,
-                        onGameListItemClicked,
-                        modifier = Modifier.padding(8.dp)
-                    )
+    Column {
+        SearchBar(onSearchButtonClicked = onSearchButtonClicked)
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp)
+        ) {
+            when(gameListUiState) {
+                is GameListUiState.Success -> {
+                    items(gameListUiState.games) { game ->
+                        GameGridItemCard(
+                            game = game,
+                            onGameListItemClicked,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                 }
-            }
 
-            is GameListUiState.Loading -> {
-                item {
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                is GameListUiState.Loading -> {
+                    item {
+                        Text(
+                            text = "Loading...",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                 }
-            }
 
-            is GameListUiState.Error -> {
-                item {
-                    Text(
-                        text = "Error: Something went wrong!",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                is GameListUiState.Error -> {
+                    item {
+                        Text(
+                            text = "Error: Something went wrong!",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                 }
             }
         }

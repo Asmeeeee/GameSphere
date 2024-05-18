@@ -15,6 +15,7 @@ import com.example.soundwave.database.SavedGameRepository
 import com.example.soundwave.model.Developer
 import com.example.soundwave.model.Game
 import com.example.soundwave.model.GameDetails
+import com.example.soundwave.ui.screens.searchText
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -51,10 +52,11 @@ class GameDBViewModel(private val gameRepository: GameRepository, private val sa
     }
 
     fun getGames() {
+        Log.i("test", "getGames -->" + searchText)
         viewModelScope.launch {
             gameListUiState = GameListUiState.Loading
             gameListUiState = try {
-                GameListUiState.Success(gameRepository.getGames().results)
+                GameListUiState.Success(gameRepository.getGames(searchText).results)
             } catch (e: IOException) {
                 GameListUiState.Error
             } catch (e: HttpException) {

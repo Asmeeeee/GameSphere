@@ -1,5 +1,6 @@
 package com.example.soundwave.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,14 +36,15 @@ import coil.compose.AsyncImage
 import com.example.soundwave.model.Game
 import com.example.soundwave.viewmodel.GameListUiState
 
-
+var searchText = ""
 @Composable
 fun GameListScreen(gameListUiState: GameListUiState,
                    onGameListItemClicked: (Game) -> Unit,
+                   onSearchButtonClicked: () -> Unit,
                    modifier: Modifier = Modifier
 ) {
     Column {
-        SearchBar(searchText = "", onSearchTextChanged = {}, onSearchButtonClicked = { /*TODO*/ })
+        SearchBar(onSearchButtonClicked = onSearchButtonClicked)
         LazyColumn(modifier = modifier) {
             when(gameListUiState) {
                 is GameListUiState.Success -> {
@@ -121,8 +123,6 @@ fun GameListItemCard(game: Game,
 
 @Composable
 fun SearchBar(
-    searchText: String,
-    onSearchTextChanged: (String) -> Unit,
     onSearchButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -136,7 +136,7 @@ fun SearchBar(
             value = text,
             onValueChange = {
                 text = it
-                onSearchTextChanged(it)
+                searchText = it
             },
             placeholder = { Text(text = "Search...") },
             singleLine = true,

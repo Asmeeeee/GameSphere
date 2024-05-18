@@ -8,15 +8,15 @@ import com.example.soundwave.model.GameResponse
 import com.example.soundwave.network.GameDBApiService
 
 interface GameRepository {
-    suspend fun getGames(): GameResponse<Game>
+    suspend fun getGames(search: String): GameResponse<Game>
     suspend fun getDevelopers(): GameResponse<Developer>
     suspend fun getGameDetails(id: String): GameDetails
     suspend fun getDeveloperDetails(id: String): DeveloperDetails
 }
 
 class GamesRepository(private val apiService: GameDBApiService) : GameRepository{
-    override suspend fun getGames(): GameResponse<Game> {
-        val response = apiService.getGames("","")
+    override suspend fun getGames(search: String): GameResponse<Game> {
+        val response = apiService.getGames(search)
         Log.d("GameRepository", "getGames response: $response")
         return response
     }
