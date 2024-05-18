@@ -1,5 +1,6 @@
 package com.example.soundwave.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -12,8 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -28,6 +36,8 @@ import coil.compose.AsyncImage
 import com.example.soundwave.R
 import com.example.soundwave.viewmodel.GameDBViewModel
 import com.example.soundwave.viewmodel.SelectedGameUiState
+import androidx.core.text.HtmlCompat
+import com.example.soundwave.model.Game
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,9 +51,10 @@ fun GameDetailScreen(
     when (selectedGameUiState) {
         is SelectedGameUiState.Success -> {
             val uriHandler = LocalUriHandler.current
-            Column(Modifier
-                .verticalScroll(rememberScrollState())
-                .width(IntrinsicSize.Max)) {
+            Column(
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .width(IntrinsicSize.Max)) {
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -61,8 +72,37 @@ fun GameDetailScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Spacer(modifier = Modifier.size(8.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = selectedGameUiState.gameDetails.released,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    IconButton(
+                        onClick = {
+                            val isFavorite = !selectedGameUiState.is_Favorite
+                            if (isFavorite) {
+                                gameDBViewModel.saveGame(selectedGameUiState.gameDetails)
+                            } else {
+                                gameDBViewModel.deleteGame(selectedGameUiState.gameDetails)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (selectedGameUiState.is_Favorite) {
+                                Icons.Filled.Favorite
+                            } else {
+                                Icons.Outlined.FavoriteBorder
+                            },
+                            contentDescription = "Favorite"
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.size(8.dp))
                 Text(
-                    text = selectedGameUiState.gameDetails.released,
+                    text = HTMLText(selectedGameUiState.gameDetails.description),
                     style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.size(8.dp))
@@ -70,18 +110,6 @@ fun GameDetailScreen(
                     onClick = { uriHandler.openUri(selectedGameUiState.gameDetails.website) },
                     modifier = modifier.fillMaxWidth()) {
                     Text(text = stringResource(id = R.string.open_uri))
-                }
-                Spacer(modifier = Modifier.size(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Favorite", style = MaterialTheme.typography.bodyLarge)
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Switch(checked = selectedGameUiState.is_Favorite, onCheckedChange = {
-                        if(it){
-                            gameDBViewModel.saveGame(selectedGameUiState.gameDetails)
-                        }else{
-                            gameDBViewModel.deleteGame(selectedGameUiState.gameDetails)
-                        }
-                    })
                 }
                 Spacer(modifier = Modifier.size(8.dp))
             }
@@ -102,3 +130,10 @@ fun GameDetailScreen(
         }
     }
 }
+
+@Composable
+fun HTMLText(html: String): String{
+    return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+}
+
+
