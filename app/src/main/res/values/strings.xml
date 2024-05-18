@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GameSphere</string>
     <string name="games">Games</string>
+
     <string name="game_detail">Game Details</string>
     <string name="developers">Developers</string>
     <string name="developer_detail">Developer Details</string>

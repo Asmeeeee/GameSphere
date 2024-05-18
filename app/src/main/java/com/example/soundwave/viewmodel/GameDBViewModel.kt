@@ -13,6 +13,7 @@ import com.example.soundwave.GameDBApplication
 import com.example.soundwave.database.GameRepository
 import com.example.soundwave.database.SavedGameRepository
 import com.example.soundwave.model.Developer
+import com.example.soundwave.model.DeveloperDetails
 import com.example.soundwave.model.Game
 import com.example.soundwave.model.GameDetails
 import com.example.soundwave.ui.screens.maxMetacriticScore
@@ -41,6 +42,12 @@ sealed interface SelectedGameUiState {
     object Loading : SelectedGameUiState
 }
 
+sealed interface SelectedDeveloperUiState {
+    data class Success(val developerDetails: DeveloperDetails, val is_Favorite: Boolean) : SelectedDeveloperUiState
+    object Error : SelectedDeveloperUiState
+    object Loading : SelectedDeveloperUiState
+}
+
 
 class GameDBViewModel(private val gameRepository: GameRepository, private val savedGameRepository: SavedGameRepository) : ViewModel()  {
     var gameListUiState: GameListUiState by mutableStateOf(GameListUiState.Loading)
@@ -49,9 +56,35 @@ class GameDBViewModel(private val gameRepository: GameRepository, private val sa
     var selectedGameUiState: SelectedGameUiState by mutableStateOf(SelectedGameUiState.Loading)
         private set
 
+    var developerListUiState: DeveloperListUiState by mutableStateOf( DeveloperListUiState.Loading )
+        private set
+
+
+    var selectedDeveloperUiState: SelectedDeveloperUiState by mutableStateOf(SelectedDeveloperUiState.Loading)
+        private set
+
+
+
+
     init {
         getGames()
     }
+
+    fun developerGames() {
+        viewModelScope.launch {
+            developerListUiState = DeveloperListUiState.Loading
+            developerListUiState = try {
+                if(minMetacriticScore == 0) minMetacriticScore++
+                val metaCriticScore = minMetacriticScore.toString() +", "+ maxMetacriticScore
+                DeveloperListUiState.Success(gameRepository.getDevelopers().results)
+            } catch (e: IOException) {
+                DeveloperListUiState.Error
+            } catch (e: HttpException) {
+                DeveloperListUiState.Error
+            }
+        }
+    }
+
 
     fun getGames() {
         viewModelScope.launch {
@@ -78,6 +111,19 @@ class GameDBViewModel(private val gameRepository: GameRepository, private val sa
                 SelectedGameUiState.Error
             } catch (e: HttpException) {
                 SelectedGameUiState.Error
+            }
+        }
+    }
+
+    fun setSelectedDeveloperDetail(idGame: String) {
+        viewModelScope.launch {
+            selectedDeveloperUiState = SelectedDeveloperUiState.Loading
+            selectedDeveloperUiState = try {
+                SelectedDeveloperUiState.Success(gameRepository.getDeveloperDetails(idGame), savedGameRepository.getGame(idGame) != null)
+            } catch (e: IOException) {
+                SelectedDeveloperUiState.Error
+            } catch (e: HttpException) {
+                SelectedDeveloperUiState.Error
             }
         }
     }

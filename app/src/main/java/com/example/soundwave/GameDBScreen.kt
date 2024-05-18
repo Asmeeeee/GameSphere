@@ -33,6 +33,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.soundwave.ui.screens.DeveloperDetailScreen
+import com.example.soundwave.ui.screens.DeveloperListScreen
 import com.example.soundwave.ui.screens.GameDetailScreen
 import com.example.soundwave.ui.screens.GameGridScreen
 import com.example.soundwave.ui.screens.GameListScreen
@@ -42,6 +44,9 @@ enum class GameDBScreen(@StringRes val title: Int) {
     List(title = R.string.games),
     Grid(title = R.string.games),
     Detail(title = R.string.game_detail),
+    DList(title = R.string.developers),
+    DDetail(title = R.string.developer_detail),
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +57,7 @@ fun GameDBAppBar(
     navigateUp: () -> Unit,
     navigateToListScreen: () -> Unit,
     navigateToGridScreen: () -> Unit,
+    navigateToDListScreen: () -> Unit,
     gameDBViewModel: GameDBViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -103,6 +109,20 @@ fun GameDBAppBar(
                     )
                     DropdownMenuItem(
                         onClick = {
+
+
+                            gameDBViewModel.developerGames()
+
+                            menuExpanded = false
+                            navigateToDListScreen()
+
+                        },
+                        text = {
+                            Text(stringResource(R.string.developers))
+                        }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
                             gameDBViewModel.getSavedGames()
                             menuExpanded = false
 
@@ -139,6 +159,7 @@ fun GameDBApp(
                 navigateUp = { navController.navigateUp() },
                 navigateToListScreen = { navController.navigate(GameDBScreen.List.name) },
                 navigateToGridScreen = { navController.navigate(GameDBScreen.Grid.name) },
+                navigateToDListScreen = { navController.navigate(GameDBScreen.DList.name) },
                 gameDBViewModel = gameDBViewModel
             )
         }
@@ -182,6 +203,27 @@ fun GameDBApp(
                 GameDetailScreen(
                     gameDBViewModel = gameDBViewModel,
                     selectedGameUiState = gameDBViewModel.selectedGameUiState,
+                    modifier = Modifier
+                )
+            }
+            composable(route = GameDBScreen.DList.name) {
+                DeveloperListScreen(
+                    developerListUiState = gameDBViewModel.developerListUiState,
+                    onGameListItemClicked = { game ->
+                        gameDBViewModel.setSelectedDeveloperDetail(game.id.toString())
+                        navController.navigate(GameDBScreen.DDetail.name)
+                    },
+                    onSearchButtonClicked ={gameDBViewModel.getGames()},
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+
+            composable(route = GameDBScreen.DDetail.name) {
+                DeveloperDetailScreen(
+                    gameDBViewModel = gameDBViewModel,
+                    selectedGameUiState = gameDBViewModel.selectedDeveloperUiState,
                     modifier = Modifier
                 )
             }
