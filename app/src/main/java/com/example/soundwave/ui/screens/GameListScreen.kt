@@ -50,8 +50,7 @@ fun GameListScreen(gameListUiState: GameListUiState,
                    modifier: Modifier = Modifier
 ) {
     Column {
-        SearchBar(onSearchButtonClicked = onSearchButtonClicked)
-        MetacriticFilter()
+        FilterApi(onSearchButtonClicked)
         LazyColumn(modifier = modifier) {
             when(gameListUiState) {
                 is GameListUiState.Success -> {
@@ -126,6 +125,12 @@ fun GameListItemCard(game: Game,
             }
         }
     }
+}
+
+@Composable
+fun FilterApi(onSearchButtonClicked: () -> Unit){
+    SearchBar(onSearchButtonClicked = onSearchButtonClicked)
+    MetacriticFilter()
 }
 
 @Composable

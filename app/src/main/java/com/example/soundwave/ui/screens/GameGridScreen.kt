@@ -31,7 +31,7 @@ fun GameGridScreen(gameListUiState: GameListUiState,
                    modifier: Modifier = Modifier
 ) {
     Column {
-        SearchBar(onSearchButtonClicked = onSearchButtonClicked)
+        FilterApi(onSearchButtonClicked)
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 128.dp)
         ) {
