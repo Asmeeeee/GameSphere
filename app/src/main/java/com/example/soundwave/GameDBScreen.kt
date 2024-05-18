@@ -34,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.soundwave.ui.screens.GameDetailScreen
+import com.example.soundwave.ui.screens.GameGridScreen
 import com.example.soundwave.ui.screens.GameListScreen
 import com.example.soundwave.viewmodel.GameDBViewModel
 
@@ -50,6 +51,7 @@ fun GameDBAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     navigateToListScreen: () -> Unit,
+    navigateToGridScreen: () -> Unit,
     gameDBViewModel: GameDBViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -73,7 +75,7 @@ fun GameDBAppBar(
         actions = {
             if (currentScreen.name == GameDBScreen.List.name || currentScreen.name == GameDBScreen.Grid.name) {
                 IconButton(onClick = {
-                    navigateToListScreen()
+                    if(currentScreen.name == GameDBScreen.List.name) navigateToGridScreen() else navigateToListScreen()
                 }) {
                     Icon(
                         imageVector = Icons.Filled.List ,
@@ -136,6 +138,7 @@ fun GameDBApp(
                 canNavigateBack = navController.previousBackStackEntry != null && currentScreen.name != GameDBScreen.List.name && currentScreen.name != GameDBScreen.Grid.name,
                 navigateUp = { navController.navigateUp() },
                 navigateToListScreen = { navController.navigate(GameDBScreen.List.name) },
+                navigateToGridScreen = { navController.navigate(GameDBScreen.Grid.name) },
                 gameDBViewModel = gameDBViewModel
             )
         }
@@ -159,6 +162,18 @@ fun GameDBApp(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
+                )
+            }
+            composable(route = GameDBScreen.Grid.name){
+                GameGridScreen(
+                    gameListUiState = gameDBViewModel.gameListUiState,
+                    onGameListItemClicked = {
+                        gameDBViewModel.setSelectedGameDetail(it.id)
+                        navController.navigate(GameDBScreen.Detail.name)
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 )
             }
             composable(route = GameDBScreen.Detail.name) {

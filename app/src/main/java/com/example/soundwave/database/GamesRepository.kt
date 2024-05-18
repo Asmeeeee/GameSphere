@@ -16,7 +16,7 @@ interface GameRepository {
 
 class GamesRepository(private val apiService: GameDBApiService) : GameRepository{
     override suspend fun getGames(): GameResponse<Game> {
-        val response = apiService.getGames()
+        val response = apiService.getGames("","")
         Log.d("GameRepository", "getGames response: $response")
         return response
     }

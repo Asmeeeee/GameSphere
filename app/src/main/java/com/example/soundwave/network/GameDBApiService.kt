@@ -14,8 +14,9 @@ interface GameDBApiService {
 
     @GET("games")
     suspend fun getGames(
-        @Query("key")
-        apiKey: String = Constants.API_KEY
+        @Query("search") search: String,
+        @Query("dates") dates: String,
+        @Query("key") apiKey: String = Constants.API_KEY
     ): GameResponse<Game>
     @GET("games/{id}")
     suspend fun getGameDetails(
