@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +41,9 @@ fun GameDetailScreen(
     when (selectedGameUiState) {
         is SelectedGameUiState.Success -> {
             val uriHandler = LocalUriHandler.current
-            Column(Modifier.width(IntrinsicSize.Max)) {
+            Column(Modifier
+                .verticalScroll(rememberScrollState())
+                .width(IntrinsicSize.Max)) {
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -46,7 +51,8 @@ fun GameDetailScreen(
                     AsyncImage(
                         model = selectedGameUiState.gameDetails.background_image,
                         contentDescription = selectedGameUiState.gameDetails.name,
-                        modifier = modifier,
+                        modifier = modifier
+                            .height(250.dp),
                         contentScale = ContentScale.Crop
                     )
                 }
