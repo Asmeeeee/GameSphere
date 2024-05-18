@@ -15,6 +15,8 @@ import com.example.soundwave.database.SavedGameRepository
 import com.example.soundwave.model.Developer
 import com.example.soundwave.model.Game
 import com.example.soundwave.model.GameDetails
+import com.example.soundwave.ui.screens.maxMetacriticScore
+import com.example.soundwave.ui.screens.minMetacriticScore
 import com.example.soundwave.ui.screens.searchText
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -52,11 +54,12 @@ class GameDBViewModel(private val gameRepository: GameRepository, private val sa
     }
 
     fun getGames() {
-        Log.i("test", "getGames -->" + searchText)
         viewModelScope.launch {
             gameListUiState = GameListUiState.Loading
             gameListUiState = try {
-                GameListUiState.Success(gameRepository.getGames(searchText).results)
+                if(minMetacriticScore == 0) minMetacriticScore++
+                val metaCriticScore = minMetacriticScore.toString() +", "+ maxMetacriticScore
+                GameListUiState.Success(gameRepository.getGames(searchText, metaCriticScore).results)
             } catch (e: IOException) {
                 GameListUiState.Error
             } catch (e: HttpException) {
