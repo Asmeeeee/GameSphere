@@ -43,7 +43,7 @@ sealed interface SelectedGameUiState {
 }
 
 sealed interface SelectedDeveloperUiState {
-    data class Success(val developerDetails: DeveloperDetails, val is_Favorite: Boolean) : SelectedDeveloperUiState
+    data class Success(val developerDetails: DeveloperDetails) : SelectedDeveloperUiState
     object Error : SelectedDeveloperUiState
     object Loading : SelectedDeveloperUiState
 }
@@ -119,7 +119,7 @@ class GameDBViewModel(private val gameRepository: GameRepository, private val sa
         viewModelScope.launch {
             selectedDeveloperUiState = SelectedDeveloperUiState.Loading
             selectedDeveloperUiState = try {
-                SelectedDeveloperUiState.Success(gameRepository.getDeveloperDetails(idGame), savedGameRepository.getGame(idGame) != null)
+                SelectedDeveloperUiState.Success(gameRepository.getDeveloperDetails(idGame))
             } catch (e: IOException) {
                 SelectedDeveloperUiState.Error
             } catch (e: HttpException) {
