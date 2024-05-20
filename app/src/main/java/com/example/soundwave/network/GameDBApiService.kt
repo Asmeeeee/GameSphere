@@ -27,6 +27,8 @@ interface GameDBApiService {
 
     @GET("developers")
     suspend fun getDeveloper(
+        @Query("search") search: String,
+        @Query("metacritic") metacritic: String,
         @Query("key")
         apiKey: String = Constants.API_KEY
     ): GameResponse<Developer>

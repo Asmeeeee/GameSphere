@@ -5,5 +5,6 @@ data class Developer(
     val age: Int,
     val languages: List<String>,
     val id : Int,
+    val image_background:String
 
 )

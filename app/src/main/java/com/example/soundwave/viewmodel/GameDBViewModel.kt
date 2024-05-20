@@ -76,7 +76,7 @@ class GameDBViewModel(private val gameRepository: GameRepository, private val sa
             developerListUiState = try {
                 if(minMetacriticScore == 0) minMetacriticScore++
                 val metaCriticScore = minMetacriticScore.toString() +", "+ maxMetacriticScore
-                DeveloperListUiState.Success(gameRepository.getDevelopers().results)
+                DeveloperListUiState.Success(gameRepository.getDevelopers(searchText, metaCriticScore).results)
             } catch (e: IOException) {
                 DeveloperListUiState.Error
             } catch (e: HttpException) {

@@ -5,5 +5,6 @@ data class DeveloperDetails(
     val age: Int,
     val gender: String,
     val games_count: Int,
-    val description: String
+    val description: String,
+    val image_background: String,
 )

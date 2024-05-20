@@ -213,7 +213,7 @@ fun GameDBApp(
                         gameDBViewModel.setSelectedDeveloperDetail(game.id.toString())
                         navController.navigate(GameDBScreen.DDetail.name)
                     },
-                    onSearchButtonClicked ={gameDBViewModel.getGames()},
+                    onSearchButtonClicked ={gameDBViewModel.developerGames()},
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)

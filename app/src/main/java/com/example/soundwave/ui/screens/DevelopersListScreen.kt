@@ -85,6 +85,16 @@ fun DeveloperListItemCard(developer: Developer,
         }
     ) {
         Row {
+            Box {
+                AsyncImage(
+                    model = developer.image_background ?: "No image",
+                    contentDescription = developer.name,
+                    modifier = modifier
+                        .width(92.dp)
+                        .height(138.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Column {
                 Text(
                     text = developer.name ?: "Unknown Game",

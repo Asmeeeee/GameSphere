@@ -57,6 +57,19 @@ fun DeveloperDetailScreen(
                 Modifier
                     .verticalScroll(rememberScrollState())
                     .width(IntrinsicSize.Max)) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp)) {
+                    AsyncImage(
+                        model = selectedGameUiState.developerDetails.image_background,
+                        contentDescription = selectedGameUiState.developerDetails.name,
+                        modifier = modifier
+                            .height(250.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
                 Text(
                     text = selectedGameUiState.developerDetails.name,
                     style = MaterialTheme.typography.headlineSmall
