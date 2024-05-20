@@ -13,9 +13,6 @@ data class DeveloperDetails(
     @SerialName(value = "age")
     val age: Int,
 
-    @SerialName(value = "languages")
-    val languages: List<String>,
-
     @SerialName(value = "image_background")
     val image_background:String,
 
@@ -33,7 +30,6 @@ data class DeveloperDetails(
             id = id,
             name = name,
             age = age,
-            languages = languages,
             image_background = image_background
         )
     }

@@ -15,9 +15,6 @@ data class Developer(
     @SerialName(value = "age")
     val age: Int,
 
-    @SerialName(value = "languages")
-    val languages: List<String>,
-
     @SerialName(value = "image_background")
     val image_background:String
 )
